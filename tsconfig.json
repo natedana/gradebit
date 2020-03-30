@@ -1,0 +1,40 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "sourceMap": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "target": "esnext",
+        "lib": ["es2015", "es2017", "es5", "dom"],
+        "moduleResolution": "node",
+        "downlevelIteration": true,
+        "experimentalDecorators": true,
+        "allowJs": true,
+        "jsx": "react",
+        "pretty": true,
+        "noErrorTruncation": true,
+        "strict": true,
+        "resolveJsonModule": true,
+        "paths": {
+            "*": ["*"],
+            "Images/*": ["client/images/*"],
+            "Containers/*": ["client/src/containers/*"],
+            "Components/*": ["client/src/components/*"],
+            "Types": ["client/src/types"],
+            "Constants": ["client/src/constants"],
+            "Contexts": ["client/src/contexts"],
+            "Api": ["client/src/api"],
+            "Util": ["client/src/util"],
+            "TestUtil": ["client/src/test/util"]
+        }
+    },
+    "include": [
+        "**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "babel.config.js",
+        "build",
+        "coverage"
+    ]
+}

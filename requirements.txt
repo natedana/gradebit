@@ -1,0 +1,25 @@
+# Django
+django==2.2.1
+djangorestframework==3.9.3
+django-environ==0.4.5
+drf-url-filters==0.5.1
+django-axes==5.0.2
+
+# Webpack template loader
+django-webpack-loader==0.6.0
+
+# Postgres
+psycopg2==2.8.2
+
+# Production
+gunicorn==19.9.0
+gevent==1.4.0
+
+# AWS
+boto3==1.9.141
+
+# Linting
+pylint==2.3.1
+
+# Code coverage
+coverage==4.5.3

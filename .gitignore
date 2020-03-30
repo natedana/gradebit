@@ -1,0 +1,30 @@
+.idea
+.DS_Store
+.vscode/launch.json
+
+package-lock.json
+
+*.py[cod]
+__pycache__
+
+*.log
+pip-log.txt
+
+*~
+*.swp
+*.swo
+
+# npm
+node_modules/
+
+.sass-cache
+
+# virtual environments
+.env
+
+#webpack
+build/
+
+coverage/
+
+data/

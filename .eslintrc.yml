@@ -1,0 +1,157 @@
+---
+env:
+  browser: true
+  es6: true
+  node: true
+  jest: true
+plugins:
+  - react
+  - react-hooks
+  - promise
+  - "@typescript-eslint"
+settings:
+  react:
+    version: detect
+parser: "@typescript-eslint/parser"
+parserOptions:
+  sourceType: module
+extends:
+  - eslint:recommended
+  - plugin:react/recommended
+  - plugin:@typescript-eslint/eslint-recommended
+  - plugin:@typescript-eslint/recommended
+rules:
+  semi:
+    - error
+    - never
+  indent:
+    - error
+    - 4
+    - SwitchCase: 1
+  arrow-spacing:
+    - error
+    - before: true
+      after: true
+  keyword-spacing:
+    - warn
+    - before: true
+      after: true
+  space-before-blocks: warn
+  space-before-function-paren:
+    - warn
+    - anonymous: never
+      named: never
+      asyncArrow: always
+  space-in-parens: warn
+  space-infix-ops: "off" # Doesn't work with typescript right now
+  comma-spacing: warn
+  brace-style:
+    - error
+    - 1tbs
+  prefer-const: error
+  object-curly-spacing:
+    - error
+    - always
+  no-case-declarations: "off"
+  no-console: "off"
+  no-multi-spaces: error
+  no-trailing-spaces: warn
+  no-var: error
+  no-whitespace-before-property: warn
+  no-tabs: warn
+  quotes:
+    - warn
+    - single
+  jsx-quotes:
+    - error
+    - prefer-double
+  sort-imports:
+    - warn
+    - ignoreCase: true
+      ignoreDeclarationSort: true
+  comma-dangle: warn
+
+  # react plugin rules
+  react/prop-types:
+    - error
+    - skipUndeclared: true
+  react/no-did-mount-set-state:
+    - off
+  react/no-did-update-set-state:
+    - error
+  react/no-will-update-set-state:
+    - error
+  react/no-unused-prop-types:
+    - warn
+  react/no-string-refs:
+    - error
+  react/no-find-dom-node: off
+  react/no-multi-comp:
+    - warn
+    - ignoreStateless: true
+  react/no-deprecated: off
+
+  # react jsx rules
+  react/jsx-curly-spacing:
+    - error
+    - when: always
+      children: true
+  react/jsx-equals-spacing:
+    - error
+    - never
+  react/jsx-indent:
+    - error
+    - 4
+  react/jsx-indent-props:
+    - error
+    - 4
+  react/jsx-closing-bracket-location:
+    - error
+    - nonEmpty: after-props
+      selfClosing: after-props
+  react/jsx-closing-tag-location:
+    - error
+  react/jsx-no-target-blank:
+    - error
+  react/jsx-tag-spacing:
+    - error
+    - closingSlash: never
+      beforeSelfClosing: never
+      afterOpening: never
+      beforeClosing: never
+  react/jsx-boolean-value:
+    - error
+    - never
+  react/jsx-curly-brace-presence:
+    - error
+    - props: never
+      children: ignore
+
+  react-hooks/rules-of-hooks: error
+  react-hooks/exhaustive-deps:
+    - warn
+    - additionalHooks: useApi.*
+  
+  # promise plugin rules
+  promise/always-return: off
+  promise/no-return-wrap: error
+  promise/param-names: error
+  promise/catch-or-return: off
+  promise/no-native: off
+  promise/no-nesting: warn
+  promise/no-promise-in-callback: off
+  promise/no-callback-in-promise: warn
+
+  "@typescript-eslint/explicit-function-return-type": off
+  "@typescript-eslint/member-delimiter-style":
+    - warn
+    - multiline:
+        delimiter: "none"
+  "@typescript-eslint/no-non-null-assertion": off
+  "@typescript-eslint/no-explicit-any": off
+  "@typescript-eslint/array-type":
+    - warn
+    - array-simple
+  "@typescript-eslint/no-unused-vars":
+    - warn
+    - ignoreRestSiblings: true

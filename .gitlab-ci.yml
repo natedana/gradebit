@@ -1,0 +1,111 @@
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  DOCKER_DRIVER: aufs
+  CI_TAG: ci
+  IMAGE_TAG: ci
+
+test:client:
+  stage: test
+  tags:
+    - on-docker
+  image: node:10.15.3-alpine
+  script:
+    - yarn
+    - yarn coverage:client
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+
+test:server:
+  stage: test
+  tags:
+    - on-docker
+  image: python:3.7.3-slim
+  services:
+    - postgres
+  variables:
+    # For some reason this is set to something on the test runner, so override it
+    POSTGRES_PORT: 5432
+  script:
+    - apt-get update -y
+    - apt-get install -y libpq5 libpq-dev build-essential
+    - pip install -r requirements.txt
+    - pip install pylint
+    - pylint server
+    - mkdir -p coverage/server /var/log/pj
+    - coverage run manage.py test --settings server.settings.test
+    - coverage report
+  coverage: '/TOTAL\s+\d+\s+\d+\s+\d+\s+\d+\s+(\d+\%)/'
+
+.build:
+  stage: build
+  tags:
+    - on-docker
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker pull $CI_REGISTRY_IMAGE:$CI_TAG || true
+    - docker pull $CI_REGISTRY_IMAGE/node-builder:$CI_TAG || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE/node-builder:$CI_TAG -t $CI_REGISTRY_IMAGE/node-builder:$CI_TAG --target node-builder .
+    - docker build --cache-from $CI_REGISTRY_IMAGE:$CI_TAG --cache-from $CI_REGISTRY_IMAGE/node-builder:$CI_TAG -t $CI_REGISTRY_IMAGE:$IMAGE_TAG .
+    - docker push $CI_REGISTRY_IMAGE/node-builder:$CI_TAG
+    - docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG
+    - docker rmi $(docker images -q -f dangling=true) || true
+    - docker rmi $CI_REGISTRY_IMAGE:$IMAGE_TAG $CI_REGISTRY_IMAGE/node-builder:$CI_TAG $CI_REGISTRY_IMAGE:$CI_TAG || true
+
+build:ci:
+  extends: .build
+  except:
+    refs:
+      - master
+      - develop
+
+release:develop:
+  extends: .build
+  variables:
+    IMAGE_TAG: develop
+  only:
+    refs:
+      - develop
+
+release:
+  extends: .build
+  variables:
+    IMAGE_TAG: latest
+  only:
+    refs:
+      - master
+
+deploy:
+  stage: deploy
+  tags:
+    - on-docker
+  services:
+    - docker:dind
+  image: docker:latest
+  environment:
+    name: production
+    url: https://$DEPLOY_HOST
+  script:
+    - apk add openssh-client git python3 python3-dev alpine-sdk libffi-dev openssl-dev
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - mkdir ~/.ssh
+    - echo "$DEPLOY_KEY" > ~/.ssh/dagrs.pem
+    - chown 400 ~/.ssh/dagrs.pem
+    - eval `ssh-agent`
+    - ssh-add ~/.ssh/dagrs.pem
+    - echo -e $DEPLOY_HOST'\t'pj >> /etc/hosts
+    - rm -rf jumper-cables
+    - git clone ${CI_REPOSITORY_URL%/*}/jumper-cables
+    - chown 644 jumper-cables
+    - cd jumper-cables
+    - pip3 install -r requirements.txt
+    - ansible-playbook web.yml -e force_webserver=yes
+  only:
+    refs:
+      - master
+  
