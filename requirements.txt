@@ -1,6 +1,6 @@
 # Django
 django==2.2.1
-djangorestframework==3.9.3
+djangorestframework==3.11.2
 django-environ==0.4.5
 drf-url-filters==0.5.1
 django-axes==5.0.2
