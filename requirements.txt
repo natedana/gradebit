@@ -1,5 +1,5 @@
 # Django
-django==2.2.1
+django==2.2.24
 djangorestframework==3.9.3
 django-environ==0.4.5
 drf-url-filters==0.5.1
